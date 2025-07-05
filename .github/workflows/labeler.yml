@@ -1,10 +1,12 @@
 # https://github.com/actions/labeler
 name: Pull Request Labeler
+
 on:
   - pull_request_target
+
 jobs:
   triage:
-    if: github.repository == 'arc53/DocsGPT'
+    if: github.repository == 'ShivKumard0/SmartDocsAI'
     permissions:
       contents: read
       pull-requests: write
