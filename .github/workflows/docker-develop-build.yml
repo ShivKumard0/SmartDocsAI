@@ -1,4 +1,4 @@
-name: Build and push multi-arch DocsGPT Docker image
+name: Build and push multi-arch SmartDocsAI Docker image
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    if: github.repository == 'arc53/DocsGPT'
+    if: github.repository == 'ShivKumard0/SmartDocsAI'
     strategy:
       matrix:
         include:
@@ -36,7 +36,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
+
       - name: Login to ghcr.io
         uses: docker/login-action@v3
         with:
@@ -52,15 +52,15 @@ jobs:
           context: ./application
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/docsgpt:develop-${{ matrix.suffix }}
-            ghcr.io/${{ github.repository_owner }}/docsgpt:develop-${{ matrix.suffix }}
+            ${{ secrets.DOCKER_USERNAME }}/smartdocsai:develop-${{ matrix.suffix }}
+            ghcr.io/${{ github.repository_owner }}/smartdocsai:develop-${{ matrix.suffix }}
           provenance: false
           sbom: false
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/docsgpt:develop
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/smartdocsai:develop
           cache-to: type=inline
 
   manifest:
-    if: github.repository == 'arc53/DocsGPT'
+    if: github.repository == 'ShivKumard0/SmartDocsAI'
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -77,24 +77,24 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
+
       - name: Login to ghcr.io
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-        
+
       - name: Create and push manifest for DockerHub
         run: |
-          docker manifest create ${{ secrets.DOCKER_USERNAME }}/docsgpt:develop \
-            --amend ${{ secrets.DOCKER_USERNAME }}/docsgpt:develop-amd64 \
-            --amend ${{ secrets.DOCKER_USERNAME }}/docsgpt:develop-arm64
-          docker manifest push ${{ secrets.DOCKER_USERNAME }}/docsgpt:develop
+          docker manifest create ${{ secrets.DOCKER_USERNAME }}/smartdocsai:develop \
+            --amend ${{ secrets.DOCKER_USERNAME }}/smartdocsai:develop-amd64 \
+            --amend ${{ secrets.DOCKER_USERNAME }}/smartdocsai:develop-arm64
+          docker manifest push ${{ secrets.DOCKER_USERNAME }}/smartdocsai:develop
 
       - name: Create and push manifest for ghcr.io
         run: |
-          docker manifest create ghcr.io/${{ github.repository_owner }}/docsgpt:develop \
-            --amend ghcr.io/${{ github.repository_owner }}/docsgpt:develop-amd64 \
-            --amend ghcr.io/${{ github.repository_owner }}/docsgpt:develop-arm64
-          docker manifest push ghcr.io/${{ github.repository_owner }}/docsgpt:develop
+          docker manifest create ghcr.io/${{ github.repository_owner }}/smartdocsai:develop \
+            --amend ghcr.io/${{ github.repository_owner }}/smartdocsai:develop-amd64 \
+            --amend ghcr.io/${{ github.repository_owner }}/smartdocsai:develop-arm64
+          docker manifest push ghcr.io/${{ github.repository_owner }}/smartdocsai:develop
